@@ -1,0 +1,195 @@
+@(employees: List[models.Employee],categories: List[models.Department],user: models.users.User,env: play.api.Environment,project: List[models.Project])
+@main("Employee",user){
+
+    
+    @* Display successful new product message from flash, if it is set *@
+	@if(flash.containsKey("success")) {
+		<div class="alert alert-success">
+            @flash.get("success")
+        </div>
+    }
+    <head>
+
+            <style>
+            
+                h1{
+                    text-align: center;
+                    color: #ff7b25;
+                }
+                body, html {
+                  height: 100%;
+                  
+                }
+                
+                .parallax {
+                  /* tde image used */
+              
+                    widtd: 100%;
+                  /* Full height */
+                  min-height: 500px; 
+                
+                  /* Create tde parallax scrolling effect */
+                  background-attachment: fixed;
+                  background-position: center;
+                  background-repeat: no-repeat;
+                  background-size: cover;
+                  margin-bottom: -7em;
+                }
+                .block{
+                    height:200px;background-image:url(/assets/images/animated.gif);font-size:25px; text-align:center; opacity: 0.5;
+                    color: whitesmoke;
+                    font-weight: lighter;
+                }
+                h4{
+                    font-size: 3.5em;
+                    color:whitesmoke;
+                }
+                td{
+                   font-size: 1.5em;
+                    color:white;
+                    font-weight:lighter;
+                }
+                </style>
+            </head>
+
+	
+
+
+                
+                <div class="parallax"></div>
+                
+                <div class="block">
+                          
+                        @if((user != null) && ("admin".equals(user.getRole()))) {
+                    
+                              
+                            Edit Below
+                            <br>
+                            <br>
+                            Make sure employee details are accurate
+                                
+                       
+                        
+                        }else{
+                            Hi Again
+                            <hr>
+                         
+                        
+                            Down below you will find our tdinkBig departments, along witd tde employees who work in tdose departments
+                                
+                        }
+                        
+                </div>
+                
+                <div class="parallax">
+</div>
+                
+<div class="row">
+
+    <div class="col-sm-3">
+
+            <ul class="list-group">
+                    <a href = "@routes.HomeController.employees(0)" class="list-group-item"><strong>Departments</strong></a>
+                @for(c<-categories) {
+                    <a href = "@routes.HomeController.employees(c.getId())" class="list-group-item catdeight">@c.getName
+                        <span class="badge">@c.getEmp.size</span> 
+                    </a>
+                }
+            </ul>
+    </div>
+
+
+
+
+
+    <div class="col-sm-6">
+        <h4 style="text-align: center;"><strong>Employees</strong></h4>
+        <table class="table ">
+            <thead>
+        <!-- tde header row-->
+        <tr>
+            <td>Image</td>
+            <!-- <td>ID</td> -->
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Department</td>
+            <!-- <td>Project</td> -->
+            @if((user != null) && ("admin".equals(user.getRole()))) {
+
+            <td>St 1</td>
+            <td>St 2</td>
+            <td>Town</td>
+            <td>Postcode</td>
+            }
+        </tr>
+        </thead>
+        <tbody>
+@* Loop for creating table rows from Employee data *@
+@for(i<-employees) {
+    <tr>
+         @if(env.resource("public/images/EmployeeImages/" + i.getId + "thumb.jpg").isDefined){
+             <td><img src="/assets/images/EmployeeImages/@(i.getId + "thumb.jpg")" class="employee-images"/></td>
+             } else {
+             <td><img src="/assets/images/EmployeeImages/noImage2.jpg" /></td>
+
+}
+                  <!-- <td>@i.getId</td> -->
+                  <td>@i.getFname</td>
+                  <td>@i.getLname</td>
+                  <td>@i.getDepartment.getName</td>
+                    @if((user != null) && ("admin".equals(user.getRole()))) {
+
+                  <td>@i.getAddress().getStreet1</td>
+                  <td>@i.getAddress().getStreet2</td>
+                  <td>@i.getAddress().getTown</td>
+                  <td>@i.getAddress().getPostCode</td>
+                  }
+                   @if((user != null) && ("admin".equals(user.getRole()))) {
+                        <td>
+                            <a href="@routes.HomeController.updateEmp(i.getId)">
+
+                                <button type="button" class="btn btn-success btn-xs">Edit</button>
+                                </a>
+                </td>
+                  <!-- Delete button -->
+                        <td>
+                            <a href="@routes.HomeController.deleteEmp(i.getId)" onclick="return confirmDel();">
+                                <button type="button" class="btn btn-danger btn-xs">Delete</button>
+                            </a>
+                </td>
+            }
+               </tr>
+            }
+
+        </tbody>
+    </table>
+
+@if((user != null) && ("admin".equals(user.getRole()))) {
+    <p>
+        <a href="@routes.HomeController.addEmp()">
+            <button class="btn btn-primary">Add Employee</button>
+        </a>
+</p>
+    }
+</div>
+</div>
+<div class="row">
+
+<div class="col-sm-3">
+
+        <ul class="list-group">
+                <a href = "@routes.HomeController.employees(0)" class="list-group-item"><strong>Project</strong></a>
+            @for(p<-project) {
+                <a href = "@routes.HomeController.employees(p.getId())" class="list-group-item catdeight">@p.getName
+                    <span class="badge">@p.getemppro.size</span> 
+                </a>
+            }
+        </ul>
+</div>
+</div>
+
+}
+
+
+
+ 
